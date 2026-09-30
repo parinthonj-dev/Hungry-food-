@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="th"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hungry Food ภาคศึกชิงเชฟ 🥊 (UI น่ารัก)</title>
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--ink:#4a3320;--card:#fffaf0;--wood:#d9a66b}
+:root[data-theme="dark"]{--ink:#4a3320}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;font-family:'Mali','Sarabun',system-ui,sans-serif;color:var(--ink);background:repeating-linear-gradient(90deg,#dcae72 0 60px,#d4a267 60px 62px,#e0b57b 62px 130px,#d09d62 130px 132px);min-height:100vh}
+#app{max-width:1150px;margin:0 auto;padding:10px}
+h1.logo{margin:4px 0;text-align:center;font-size:clamp(30px,6vw,52px);color:#ffcf1f;-webkit-text-stroke:2px #4a3320;paint-order:stroke fill;text-shadow:0 4px 0 #4a3320;letter-spacing:1px}
+h1.logo span{color:#6fd07a}
+.sub{text-align:center;font-weight:700;background:#fff3c4;border-radius:20px;padding:4px 14px;display:table;margin:0 auto 10px;border:2px solid #f0c24a}
+.btn{font-family:inherit;font-weight:700;border:0;border-radius:16px;padding:10px 18px;font-size:16px;color:#fff;background:#4aa3f0;box-shadow:0 4px 0 #2b73b3;cursor:pointer;transition:.1s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #2b73b3}.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.g{background:#5cc46a;box-shadow:0 4px 0 #3a8d46}.btn.o{background:#ff9f43;box-shadow:0 4px 0 #c46f14}.btn.r{background:#ff6b81;box-shadow:0 4px 0 #b83a4f}
+.wrap{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;justify-content:center}
+.board{position:relative;flex:1 1 560px;max-width:760px;aspect-ratio:9/7.4;display:grid;grid-template-columns:repeat(9,1fr);grid-template-rows:repeat(7,1fr);gap:5px;padding:10px;background:#7bc96f;border:6px solid #2f6b3a;border-radius:14px;box-shadow:0 10px 0 #24512c,0 18px 30px #0004;background-image:radial-gradient(circle at 20% 30%,#9be08a 0 18%,transparent 19%),radial-gradient(circle at 80% 70%,#a8e59a 0 20%,transparent 21%)}
+.tile{position:relative;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:clamp(14px,3.2vw,28px);border:3px solid #fff;box-shadow:0 3px 0 #0003;line-height:1}
+.tile small{font-size:clamp(7px,1.3vw,11px);font-weight:700;margin-top:1px}
+.tile.cur{animation:pulse .8s infinite alternate}.tile.gold{box-shadow:0 0 0 4px #ffd700,0 0 18px 6px #ffe680;animation:pulse .6s infinite alternate}.tile.gold::after{content:'✨×4';position:absolute;top:-8px;right:-4px;font-size:11px;background:#ffd700;border-radius:8px;padding:0 4px;font-weight:700}
+@keyframes pulse{to{transform:scale(1.08)}}
+.tok{position:absolute;bottom:-4px;display:flex;gap:0}
+.tok i{font-style:normal;width:clamp(15px,3vw,26px);height:clamp(15px,3vw,26px);border-radius:50%;border:2px solid #fff;display:grid;place-items:center;font-size:clamp(9px,1.8vw,15px);box-shadow:0 2px 3px #0006;animation:hop .4s}
+@keyframes hop{0%{transform:translateY(-14px)}60%{transform:translateY(2px)}100%{transform:none}}
+.center{grid-area:2/2/7/9;background:#fff8dcd9;border-radius:22px;border:3px dashed #f0c24a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:6px;text-align:center}
+.center .who{font-size:clamp(14px,2.6vw,22px);font-weight:700}
+.die{font-size:clamp(46px,10vw,84px);line-height:1;cursor:pointer;filter:drop-shadow(0 4px 0 #0003);user-select:none}
+.die.roll{animation:spin .3s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.msg{font-size:clamp(11px,2vw,15px);min-height:2.6em;background:#fff;border-radius:12px;padding:4px 10px;max-width:92%}
+.side{flex:1 1 320px;max-width:420px;display:flex;flex-direction:column;gap:10px}
+.box{background:var(--card);border-radius:18px;padding:10px 12px;border:3px solid #f0c24a;box-shadow:0 4px 0 #b98a2c}
+.box h3{margin:0 0 6px;font-size:16px}
+.sc{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:12px;margin-bottom:4px;font-size:14px;background:#fff}
+.sc.on{outline:3px solid #ff9f43}.av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:20px;border:2px solid #fff;box-shadow:0 2px 0 #0003;flex:none}
+.bar{height:8px;background:#eee;border-radius:5px;overflow:hidden;margin-top:2px}.bar b{display:block;height:100%;background:#5cc46a}
+.menu{border-radius:14px;padding:8px;margin-bottom:8px;background:#eaf5ff;border:2px solid #9fd0f5}
+.menu.done{opacity:.55;background:#e5f7e5;border-color:#8fd19a}.menu.rdy{border-color:#ff9f43;background:#fff1de}
+.menu b{font-size:14px}.menu .k{float:right;font-weight:700;color:#e0552b;font-size:13px}
+.need{display:flex;flex-wrap:wrap;gap:3px;margin:5px 0}
+.ch{font-size:13px;padding:1px 6px;border-radius:10px;background:#fff;border:2px solid #ddd}.ch.ok{border-color:#5cc46a;background:#e7ffe9}
+.inv{display:flex;flex-wrap:wrap;gap:4px}.inv .ch{font-size:15px}
+.ov{position:fixed;inset:0;background:#0006;display:grid;place-items:center;z-index:9;padding:14px;animation:fd .2s}@keyframes fd{from{opacity:0}}
+.modal{background:var(--card);border-radius:24px;border:5px solid #ffcf1f;padding:18px;max-width:460px;width:100%;text-align:center;max-height:90vh;overflow:auto;animation:pop .25s}
+@keyframes pop{from{transform:scale(.7)}}
+.modal h2{margin:0 0 8px}.modal .big{font-size:56px}
+.opts{display:grid;gap:8px;margin-top:10px}
+.pick{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+.pick button{font-family:inherit;border:3px solid #fff;border-radius:14px;padding:6px 0;font-size:24px;cursor:pointer;box-shadow:0 3px 0 #0003}
+.pick button small{display:block;font-size:11px;font-weight:700;color:var(--ink)}
+.setup{max-width:560px;margin:14px auto;text-align:center}
+.chars{display:grid;gap:8px;margin:10px 0}.hero{text-align:center}
+.conf{position:fixed;top:-30px;font-size:26px;animation:fall linear forwards;z-index:10;pointer-events:none}@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#4a3320;color:#fff;padding:8px 16px;border-radius:20px;z-index:11;font-weight:700;animation:fd .2s}
+
+body{background:#ffdca0 radial-gradient(#fff9 2px,transparent 2.5px) 0 0/28px 28px}
+#app{padding:12px 12px 34px}
+.sub{background:#fff;border:0;box-shadow:0 3px 0 #f0c24a;color:#8a5a1f;margin-bottom:14px}
+.wrap{gap:18px}
+.board{border:8px solid #fff;outline:4px solid #2f6b3a;border-radius:28px;box-shadow:0 8px 0 #24512c,0 22px 32px #0003;gap:6px;padding:12px;background-color:#8ad97c}
+.tile{border:0;border-radius:16px;box-shadow:inset 0 -5px 0 #0002,inset 0 3px 0 #fff9,0 3px 0 #0002;font-size:clamp(15px,3vw,26px)}
+.tile small{color:#4a3320;background:#fffc;border-radius:8px;padding:0 4px;margin-top:2px;max-width:94%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tile.cur{outline:4px solid #ff6b81;outline-offset:1px}
+.tile.gold{box-shadow:0 0 0 4px #ffd700,0 0 18px 6px #ffe680}
+.center{background:linear-gradient(#fffdf2,#fff1c9);border:0;box-shadow:inset 0 0 0 3px #ffd75e,0 4px 0 #0002;border-radius:26px;gap:5px}
+.center .who{background:#ff9f43;color:#fff;border-radius:16px;padding:2px 14px;box-shadow:0 3px 0 #c46f14}
+.center .msg{background:#fff;box-shadow:inset 0 0 0 2px #ffe6a3;border-radius:14px}
+.center>div:last-child{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.btn{border-radius:14px;padding:8px 14px;font-size:clamp(12px,2.3vw,15px)}
+.side{max-height:none}
+@media(min-width:1000px){.side{position:sticky;top:8px;max-height:calc(100vh - 16px);overflow:auto;padding:4px 6px 8px 2px}}
+@media(max-width:700px){.side{max-width:none}}
+.box{border:0;border-radius:22px;box-shadow:0 4px 0 #0002;background:#fffdf5;padding:12px 14px}
+.box h3{font-size:15px;color:#b5651d;margin:0 0 8px}
+.sc{background:#fff8e6;border-radius:16px;padding:6px 10px}.sc.on{outline:0;background:#ffe8bd;box-shadow:inset 0 0 0 3px #ff9f43}
+.av{width:38px;height:38px;font-size:22px}
+.info{display:grid;gap:4px;margin-top:8px}.info div{font-size:12px;background:#eef7ff;border-radius:10px;padding:4px 8px}
+.menu{border-radius:16px;background:#f1f8ff;border:0;box-shadow:inset 0 0 0 2px #b9dcf7}
+.menu.rdy{background:#fff0dc;box-shadow:inset 0 0 0 3px #ff9f43}.menu.done{box-shadow:inset 0 0 0 2px #8fd19a}
+.menu .k{background:#ffe1d6;border-radius:10px;padding:0 8px}
+.legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px}
+.modal{border:0;border-radius:28px;box-shadow:0 0 0 6px #ffcf1f,0 20px 40px #0005;background:#fffdf5;position:relative;padding-top:40px}
+.mclose{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:50%;border:2px solid #f0c24a;background:#fff;color:#b5651d;font-weight:700;font-size:15px;line-height:1;cursor:pointer;box-shadow:0 2px 0 #d9a840;z-index:2}
+.mclose:active{transform:translateY(2px);box-shadow:none}
+.opts .btn{width:100%}
+.prev{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px;margin:6px 0 12px}.prev div{border-radius:18px;padding:8px 4px;color:#fff;font-weight:700;box-shadow:0 4px 0 #0003}.prev b{display:block;font-size:34px}.prev small{display:block;font-size:11px;font-weight:600}
+.setup p{background:#fff8e6;border-radius:16px;padding:10px 12px;line-height:1.55}
+.chars{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+</style>
+<style id="help-css">
+#helpFab{position:fixed;right:calc(12px + env(safe-area-inset-right,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:20;font-family:inherit;font-weight:700;font-size:15px;color:#fff;background:#8e5bd9;border:0;border-radius:24px;padding:11px 16px;box-shadow:0 4px 0 #5f36a3,0 8px 16px #0003;cursor:pointer}
+#helpFab:active{transform:translateY(3px);box-shadow:0 1px 0 #5f36a3}
+#helpOv{position:fixed;inset:0;z-index:30;background:#0007;display:none;align-items:flex-end;justify-content:center;padding:0;font-family:'Mali','Sarabun',system-ui,sans-serif;color:#4a3320}
+#helpOv.on{display:flex;animation:fd .15s}
+#helpBox{background:#fffdf5;width:100%;max-width:680px;height:88vh;max-height:88vh;border-radius:26px 26px 0 0;border:4px solid #8e5bd9;border-bottom:0;display:flex;flex-direction:column;overflow:hidden}
+@media(min-width:760px){#helpOv{align-items:center;padding:16px}#helpBox{height:82vh;border-radius:26px;border-bottom:4px solid #8e5bd9}}
+#helpHd{display:flex;align-items:center;gap:8px;padding:10px 12px 6px}
+#helpHd b{flex:1;font-size:17px}
+#helpX{font-family:inherit;font-weight:700;border:0;border-radius:50%;width:34px;height:34px;background:#ff6b81;color:#fff;font-size:16px;cursor:pointer;box-shadow:0 3px 0 #b83a4f}
+#helpTabs{display:flex;gap:6px;padding:4px 10px 8px;overflow-x:auto;flex:none}
+#helpTabs button{font-family:inherit;font-weight:700;font-size:14px;white-space:nowrap;border:0;border-radius:14px;padding:7px 12px;background:#efe6ff;color:#5f36a3;cursor:pointer}
+#helpTabs button.on{background:#8e5bd9;color:#fff}
+#helpBody{overflow:auto;padding:4px 14px 22px;font-size:14px;line-height:1.55;flex:1;-webkit-overflow-scrolling:touch}
+#helpBody h4{margin:14px 0 6px;font-size:16px;color:#b5651d}
+#helpBody h4:first-child{margin-top:4px}
+#helpBody p{margin:4px 0}
+#helpBody ul{margin:4px 0;padding-left:20px}
+#helpBody table{border-collapse:collapse;width:100%;font-size:13px;margin:6px 0}
+#helpBody th,#helpBody td{border:2px solid #f0c24a;padding:4px 6px;text-align:center}
+#helpBody th{background:#fff1c4}
+.hk{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}
+.hk div{border-radius:16px;padding:8px 4px;text-align:center;color:#4a3320;font-weight:700;box-shadow:0 3px 0 #0002}
+.hk div b{display:block;font-size:26px;line-height:1.1}
+.hk div small{display:block;font-weight:600;font-size:11px}
+.hn{background:#fff3c4;border-radius:12px;padding:6px 10px;margin:8px 0;font-size:13px}
+.hc{background:#f1f8ff;border-radius:14px;padding:10px;margin:6px 0}
+.hc label{display:flex;align-items:center;gap:8px;margin:5px 0;font-weight:700}
+.hc input{font-family:inherit;font-size:16px;width:90px;padding:5px 8px;border:2px solid #9fd0f5;border-radius:10px;color:#4a3320}
+.hres{font-size:15px;background:#fff;border-radius:12px;padding:8px 10px;margin-top:8px;box-shadow:inset 0 0 0 2px #b9dcf7}
+.hres big{font-size:22px;color:#e0552b}
+.hbar{display:flex;height:16px;border-radius:8px;overflow:hidden;margin-top:6px;background:#eee}
+.hbar i{display:block;height:100%}
+.hst{background:#fff8e6;border-radius:14px;padding:8px 10px;margin:6px 0}
+.hst .hb{height:10px;background:#eee;border-radius:6px;overflow:hidden;margin-top:4px}
+.hst .hb b{display:block;height:100%;background:#5cc46a}
+</style>
+</head><body><div id="app"></div>
+<script>
+const I={r:['🍚','ข้าว'],n:['🍜','เส้น'],f:['🍞','แป้ง'],c:['🍗','ไก่'],p:['🥩','หมู'],e:['🥚','ไข่'],o:['🫒','น้ำมัน'],b:['🧈','เนย'],v:['🥬','ผักบุ้ง'],k:['🥕','แครอท'],s:['🥗','ผักสลัด'],B:['🍌','กล้วย'],A:['🍎','แอปเปิ้ล'],O:['🍊','ส้ม']};
+const GR={r:'a',n:'a',f:'a',c:'b',p:'b',e:'b',o:'c',b:'c',v:'d',k:'d',s:'d',B:'e',A:'e',O:'e'};
+const GC={a:'#ffc45e',b:'#ff9bab',c:'#ffe066',d:'#7fd88a',e:'#ffab6e'};
+const M=[['ข้าวกะเพราไก่ไข่ดาว+กล้วย',550,'r2c2e1v1o1B1'],['ข้าวผัดหมูไข่+ส้ม',560,'r2p2e1k1o1O1'],['ข้าวหน้าไก่ไข่ข้น+แอปเปิ้ล',530,'r2c2e1s1b1A1'],['ข้าวหมูย่างสลัดผัก+กล้วย',540,'r2p2s2o1B1'],['ข้าวปั้นไก่ไข่ผักสามสี+ส้ม',500,'r2c2e1k1o1O1'],['บะหมี่ไก่ไข่ผัก+แอปเปิ้ล',510,'n2c2e1v1o1A1'],['ก๋วยจั๊บหมูไข่+กล้วย',520,'n2p2e1v1o1B1'],['พาสต้าไก่ผัก+ส้ม',500,'n2c2k1s1b1O1'],['โรลไก่ไข่ผักสด+กล้วย',460,'f2c1e1s1b1B1'],['พิซซ่าไก่ผัก+แอปเปิ้ล',490,'f2c2k1s1b1A1'],['แซนด์วิชไข่หมูผัก+ส้ม',450,'f2p1e1s1b1O1'],['แพนเค้กกล้วยหอม+ไข่+แอปเปิ้ล',430,'f2e1b1B2A1'],['สลัดไก่ไข่สามสี+กล้วย',380,'c2e1s1k1o1B1'],['กระทะร้อนหมูไข่ผัก+ส้ม',430,'p2e1v1k1o1O1'],['โทสต์กล้วยไข่เนย+ส้ม',420,'f2e1b1B2O1']].map(a=>({n:a[0],k:a[1],need:[...a[2].matchAll(/(.)(\d)/g)].reduce((o,x)=>(o[x[1]]=+x[2],o),{})}));
+const CH=[{n:'น้องวิน',e:'👦',t:1450,a:'นั่งเรียน เล่นเกม (Activity น้อย)',c:'#4aa3f0'},{n:'น้องเมย์',e:'🏃‍♀️',t:1750,a:'ซ้อมวิ่ง เล่นบาส (Activity สูง)',c:'#ff6b81'},{n:'พี่เจต',e:'🚶',t:1600,a:'จัดนิทรรศการ เดินขึ้นลงตึก (Activity ปานกลาง)',c:'#5cc46a'},{n:'น้องฟ้า',e:'🎨',t:1500,a:'วาดรูป เล่นดนตรี นั่งเรียนศิลปะ (Activity น้อย-ปานกลาง)',c:'#c97bff'},{n:'พี่ปอนด์',e:'🏊',t:1900,a:'ซ้อมว่ายน้ำทุกวัน แข่งกีฬาโรงเรียน (Activity สูงมาก)',c:'#ffa63e'}];
+const T='S r c ? e v M n B p ? o k X f M A s ? b O c X M e r ? p'.split(' ');
+const POS=T.map((_,i)=>i<9?[9-i,7]:i<14?[1,6-(i-9)]:i<23?[i-13,1]:[9,i-21]);
+let MAXR=14;const RN={1:14,2:20,3:20,4:25,5:25};CH[0].abt='🧠 ฉลาดคิด: เลือกวัตถุดิบฟรี 1 ชิ้น (ใช้ได้ 1 ครั้ง)';CH[1].abt='🏃 สปรินต์: ทอยรอบหน้าเดินเพิ่ม +3 (ใช้ได้ 1 ครั้ง)';CH[2].abt='🎲 เต๋าทอง: ทอย 2 ลูก เลือกลูกมากกว่า (ใช้ได้ 1 ครั้ง)';CH[3].abt='🛡️ ป้องกันไว้ก่อน: ได้โล่ป้องกันฟรีทันที (ใช้ได้ 1 ครั้ง)';CH[4].abt='💰 นักสะสม: ได้วัตถุดิบฟรี 2 ชิ้น (ใช้ได้ 1 ครั้ง)';
+const MIS=[{t:'🥗 สายสุขภาพ: ไม่กินของหวานเลย',f:p=>p.extra==0,b:70},{t:'🎯 เป๊ะปัง: พลังงานต่างจากเป้าไม่เกิน 60 kcal',f:p=>Math.abs(p.kcal+p.extra-p.t)<=60,b:90},{t:'⭐ นักสะสมดาว: ได้ดาวสุขภาพ ≥ 3',f:p=>p.stars>=3,b:60},{t:'🍳 เชฟเร็ว: ปรุงครบ 3 มื้อเป็นคนแรก',f:p=>G.end==p.i,b:60},{t:'🎒 ไม่ทิ้งของ: จบเกมเหลือวัตถุดิบ ≤ 3 ชิ้น',f:p=>Object.values(p.inv).reduce((a,b)=>a+b,0)<=3,b:60}];
+const goldPick=()=>{const l=T.map((t,i)=>I[t]?i:-1).filter(i=>i>=0);return l[rn(l.length)]};
+function calcQ(){const c=[30,40,50,60][rn(4)],pr=[10,15,20][rn(3)],f=[5,10,15][rn(3)],a=c*4+pr*4+f*9;return[`อาหารมีคาร์บ ${c} g โปรตีน ${pr} g ไขมัน ${f} g ให้พลังงานกี่ kcal? (คาร์บ/โปรตีน = 4, ไขมัน = 9)`,a+' kcal',[(a+36)+' kcal',(a-45)+' kcal']]}
+let AC;function beep(f=660,d=.12){try{AC=AC||new AudioContext();const o=AC.createOscillator(),g=AC.createGain();o.frequency.value=f;o.type='triangle';g.gain.value=.08;o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+d)}catch(e){}}
+const Q=[['โปรตีนมีประโยชน์อย่างไร?','สร้างและซ่อมแซมร่างกาย',['ให้พลังงานสำรองอย่างเดียว','ช่วยย่อยน้ำ']],['ไขมัน 1 กรัม ให้พลังงานกี่ kcal?','9 kcal',['4 kcal','0 kcal']],['คาร์โบไฮเดรต 1 กรัม ให้พลังงานกี่ kcal?','4 kcal',['9 kcal','0 kcal']],['อาหารหมู่ใดให้พลังงานหลัก?','ข้าว-แป้ง',['ผัก','น้ำเปล่า']],['เครื่องดื่มใดดีต่อสุขภาพที่สุด?','น้ำเปล่า',['น้ำอัดลม','น้ำหวาน']],['วิตามินและเกลือแร่ให้พลังงานกี่ kcal?','0 kcal',['4 kcal','9 kcal']],['ผักและผลไม้ให้สารอาหารใดเป็นหลัก?','วิตามินและเกลือแร่',['ไขมันสูง','น้ำตาลล้วน']],['ถ้ากินเกินพลังงานที่ร่างกายต้องการ จะเกิดอะไรขึ้น?','ร่างกายสะสมเป็นไขมัน',['ตัวสูงขึ้นทันที','ไม่เกิดอะไร']]];
+const SW=[['🍰','เค้กช็อกโกแลต',220],['🥤','น้ำหวานแก้วใหญ่',180],['🍩','โดนัทน้ำตาล',200],['🧋','ชานมไข่มุก',250]];
+const $=s=>document.querySelector(s),sleep=ms=>new Promise(r=>setTimeout(r,ms)),sh=a=>[...a].sort(()=>Math.random()-.5),rn=n=>Math.floor(Math.random()*n);
+let G={ps:[],cur:0,ph:'setup',end:-1,busy:false,msg:'',die:'🎲'};
+function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),1700)}
+function ask(html){return new Promise(res=>{const o=document.createElement('div');o.className='ov';o.innerHTML='<div class="modal"><button class="mclose" onclick="mr(null)" aria-label="ปิด">✕</button>'+html+'</div>';document.body.appendChild(o);window.mr=v=>{o.remove();res(v)}})}
+const ok=(t='ตกลง',v=1,c='g')=>`<button class="btn ${c}" onclick='mr(${JSON.stringify(v)})'>${t}</button>`;
+function setup(){G.ph='setup';G.ps=[];$('#app').innerHTML=`<h1 class="logo">Hungry <span>Food</span></h1><div class="sub">เลือกอาหารดี มีพลังงาน เรียนรู้ไปด้วยกัน</div>
+<div class="box setup"><div class="prev">${CH.map(c=>`<div style="background:${c.c}"><b>${c.e}</b>${c.n}<small>${c.t} kcal/วัน</small></div>`).join('')}</div><h3 style="justify-content:center">🎮 เลือกจำนวนผู้เล่น (สุ่มตัวละครให้ · เล่นสลับกันในเครื่องเดียว)</h3><div class="chars">${CH.map((c,i)=>`<button class="btn ${i?'':'g'}" onclick="start(${i+1})" style="background:${'#4aa3f0'}">${'👥'.repeat(1)} ${i+1} ผู้เล่น · ${RN[i+1]} รอบ${i==0?' (เล่นคนเดียว)':''}</button>`).join('')}</div>
+<p style="font-size:14px;text-align:left"><b>วิธีเล่น:</b> ทอยลูกเต๋าเดินตามช่อง เก็บ<b>การ์ดวัตถุดิบ</b> ให้ครบตามสูตรใน<b>การ์ดเมนู 3 มื้อ</b> แล้วกด "ปรุงอาหาร" ผู้ชนะคือคนที่พลังงานรวมใกล้ <b>Target Energy</b> ของตัวละครมากที่สุด (ไม่ขาด ไม่เกิน!) 🍽️<br>⚔️ <b>ภาคท้าทาย:</b> จำกัดรอบตามจำนวนผู้เล่น (1 คน 14 · 2–3 คน 20 · 4–5 คน 25 รอบ) · ช่องวัตถุดิบทอง ✨×4 เปลี่ยนทุกรอบ · เดินไปช่องเดียวกับคู่แข่งแอบขโมยของได้ · พลังพิเศษประจำตัวละคร · ภารกิจลับ · โจทย์คำนวณ kcal<br>🥊 <b>ภาคศึกชิงเชฟ:</b> สะสมพลัง ⚡ (ได้ +1 ทุก 2 ตาที่เล่น / ตกช่องทอง ✨ / ตอบคำถามถูก / ปฏิเสธขนม) โจมตีได้ <b>ตาละ 1 ครั้งเท่านั้น</b> เลือก 🌪️ลมพัดถอย 🍬ป้อนขนม หรือ 🥷ขโมยของ แล้วใช้พลัง ⚡1-3 ยิ่งใช้เยอะยิ่งแรง (⚡1 เบาสุด ⚡3 แรงสุด) หรือใช้ 🧊แช่แข็ง (⚡3) วาง 🪤 กับดัก (⚡1) 🛡️ โล่กัน (⚡1) · พายุตลาดสุ่ม (ต้องมี 2 คนขึ้นไป)<br>⭐ ปฏิเสธขนมหวานได้ดาวสุขภาพ ❓ ตอบคำถามโภชนาการได้วัตถุดิบ 🛒 ตลาดเลือกวัตถุดิบเอง 🏁 ผ่านจุด START ได้วัตถุดิบฟรี</p></div>`}
+async function start(n){const ms=sh(M);G={ps:sh(CH).slice(0,n).map((c,i)=>({...c,cid:CH.indexOf(c),i,pos:0,inv:{},menus:ms.slice(i*3,i*3+3).map(m=>({m,d:0})),cooked:0,kcal:0,extra:0,stars:0,ab:1,en:2,sh:0,frz:0,buff:'',mis:MIS[rn(MIS.length)]})),round:1,traps:{},gold:goldPick(),cur:0,ph:'roll',end:-1,busy:false,msg:'ทอยลูกเต๋าเพื่อเริ่มเดินได้เลย!',die:'🎲'};MAXR=RN[n];await reveal();beginTurn(P());render()}
+
+async function reveal(){const ps=G.ps;
+const pr=ask(`<div class="big">🎲</div><h2>สุ่มผู้เล่น!</h2><div id="rvA" style="font-size:44px;min-height:60px">❓</div><div id="rvN" style="font-weight:700;min-height:1.6em"></div><div id="rvL" style="display:none"></div><div class="opts" id="rvB" style="display:none">${ok('🎮 เริ่มเล่นเลย!')}</div>`);
+for(let i=0;i<14;i++){const a=$('#rvA');if(!a)break;const c=CH[rn(CH.length)];a.textContent=c.e;$('#rvN').textContent=c.n;beep(400+rn(400),.04);await sleep(80+i*12)}
+if($('#rvA')){$('#rvA').textContent='🎉';$('#rvN').textContent='ได้ผู้เล่นแล้ว! เรียงตามลำดับการเล่น';
+$('#rvL').style.display='block';$('#rvL').innerHTML=ps.map((q,i)=>`<div class="sc" style="text-align:left"><b>${i+1}.</b><div class="av" style="background:${q.c}">${q.e}</div><div style="flex:1"><b>${q.n}</b><div style="font-size:12px">เป้า ${q.t} kcal/วัน</div></div></div>`).join('')+`<div style="font-size:13px;margin-top:6px">⏱️ เล่นทั้งหมด <b>${MAXR} รอบ</b></div>`;
+$('#rvB').style.display='grid';beep(880,.2)}
+await pr}
+const P=()=>G.ps[G.cur];
+const ready=(p,m)=>Object.entries(m.need).every(([k,v])=>(p.inv[k]||0)>=v);
+function render(){const p=P();
+const tiles=T.map((t,i)=>{const [c,r]=POS[i];let bg,ic,lb='';
+if(t=='S'){bg='#fff';ic='🏁';lb='START'}else if(t=='?'){bg='#ff8fa3';ic='❓'}else if(t=='M'){bg='#5bb0f5';ic='🛒';lb='ตลาด'}else if(t=='X'){bg='#c5a3f0';ic='🍭';lb='ของหวาน'}else{bg=GC[GR[t]];ic=I[t][0];lb=I[t][1]}
+const here=G.ps.filter(q=>q.pos==i);
+return `<div class="tile ${p.pos==i?'cur':''} ${G.gold==i?'gold':''}" style="grid-area:${r}/${c};background:${bg}">${ic}<small>${lb}</small>${G.traps[i]!==undefined?'<span style="position:absolute;top:-6px;left:-4px;font-size:14px">🪤</span>':''}${here.length?`<div class="tok">${here.map(q=>`<i style="background:${q.c}">${q.e}</i>`).join('')}</div>`:''}</div>`}).join('');
+const can=!G.busy&&G.ph!='over';
+$('#app').innerHTML=`<h1 class="logo">Hungry <span>Food</span></h1><div class="sub">เลือกอาหารดี มีพลังงาน เรียนรู้ไปด้วยกัน</div>
+<div class="wrap"><div class="board">${tiles}<div class="center"><div class="who">${p.e} ตาของ ${p.n} · รอบ ${G.round}/${MAXR}</div><div class="die" id="die" onclick="roll()">${G.die}</div>
+<div class="msg">${G.msg}</div><div><button class="btn" style="background:#e04f6a;box-shadow:0 4px 0 #a02a40" ${can&&G.ps.length>1&&!p.atkUsed?'':'disabled'} onclick="attack()">⚔️ ${p.atkUsed?'ใช้ไปแล้วตานี้':'โจมตี ⚡'+p.en}</button> 
+${G.ph=='roll'?`<button class="btn o" ${can?'':'disabled'} onclick="roll()">🎲 ทอยเต๋า</button> <button class="btn" ${can?'':'disabled'} onclick="swapMenu()">🔄 สลับเมนู</button> <button class="btn r" ${can&&p.ab?'':'disabled'} onclick="useAb()">⚡ พลังพิเศษ</button>`:`<button class="btn g" ${can?'':'disabled'} onclick="endTurn()">✅ จบตา</button>`}</div></div></div>
+<div class="side"><div class="box"><h3>🏆 ผู้เล่น</h3>${G.ps.map(q=>{const tot=q.kcal+q.extra;return `<div class="sc ${q==p?'on':''}"><div class="av" style="background:${q.c}">${q.e}</div><div style="flex:1"><b>${q.n}</b> ⭐${q.stars} ⚡${q.en}${q.sh?'🛡️':''}${q.frz?'🧊':''} · มื้อ ${q.cooked}/3<div style="font-size:12px">${tot} / ${q.t} kcal</div><div class="bar"><b style="width:${Math.min(100,tot/q.t*100)}%;${tot>q.t?'background:#ff6b81':''}"></b></div></div></div>`}).join('')}
+<div class="info"><div>🎯 เป้าหมาย ${p.n}: <b>${p.t} kcal/วัน</b> — ${p.a}</div><div>⚡ ${p.ab?p.abt:'<s>'+p.abt+'</s>'}</div><div>🎖️ ภารกิจลับ: ${p.mis.t} <b>(โบนัสคะแนน)</b></div></div></div>
+<div class="box"><h3>📋 การ์ดเมนูของ ${p.n}</h3>${p.menus.map((x,i)=>{const r=ready(p,x.m);return `<div class="menu ${x.d?'done':r?'rdy':''}"><span class="k">${x.m.k} kcal</span><b>${x.d?'✅ ':''}${x.m.n}</b><div class="need">${Object.entries(x.m.need).map(([k,v])=>{const h=Math.min(v,p.inv[k]||0);return `<span class="ch ${h>=v?'ok':''}">${I[k][0]} ${h}/${v}</span>`}).join('')}</div>${x.d?'':`<button class="btn g" style="padding:5px 12px;font-size:14px" ${r&&can?'':'disabled'} onclick="cook(${i})">👨‍🍳 ปรุงอาหาร</button>`}</div>`}).join('')}</div>
+<div class="box"><h3>🎒 กระเป๋าวัตถุดิบ</h3><div class="inv">${Object.entries(p.inv).filter(x=>x[1]>0).map(([k,v])=>`<span class="ch" style="border-color:${GC[GR[k]]}">${I[k][0]} ${I[k][1]} ×${v}</span>`).join('')||'<span style="font-size:13px">ยังไม่มีของ — ไปเก็บกันเลย!</span>'}</div></div>
+<div class="box legend"><span>🍚 วัตถุดิบ ×2</span><span>✨ ช่องทอง ×4</span><span>🛒 ตลาด</span><span>🍭 ของหวาน</span><span>❓ เหตุการณ์</span><span>🪤 กับดัก</span><span>🏁 START</span></div><button class="btn r" onclick="confirmRestart()">↺ เริ่มใหม่</button></div></div>`}
+async function confirmRestart(){if(G.busy)return;const yes=await ask(`<div class="big">↺</div><h2>เริ่มเกมใหม่?</h2><p>ความคืบหน้าของเกมตอนนี้จะหายไปทั้งหมด</p><div class="opts">${ok('✅ ใช่ เริ่มใหม่เลย','yes','r')}${ok('ยกเลิก','',0)}</div>`);if(yes=='yes')setup()}
+function give(p,k,n=1){p.inv[k]=(p.inv[k]||0)+n}
+async function roll(){if(G.busy||G.ph!='roll')return;G.busy=true;const d=$('#die');d.classList.add('roll');const F='⚀⚁⚂⚃⚄⚅';for(let i=0;i<9;i++){d.textContent=F[rn(6)];beep(300+rn(300),.04);await sleep(70)}
+d.classList.remove('roll');const p=P();let n=1+rn(6);if(p.buff=='two')n=Math.max(n,1+rn(6));G.die=F[n-1];if(p.buff=='sprint')n+=3;p.buff='';G.msg=`${p.n} ทอยได้ ${n}!`;render();
+for(let i=0;i<n;i++){await sleep(260);p.pos=(p.pos+1)%T.length;if(p.pos==0&&i<n-1||p.pos==0){G.msg='🏁 ผ่านจุด START! เลือกวัตถุดิบฟรี 1 ชิ้น';render();await pick(p,1,'🏁 โบนัสผ่าน START')}render()}
+await sleep(200);const r=await land(p);if(r!='again')G.ph='act';G.busy=false;render()}
+function menuView(p){const todo=p.menus.filter(x=>!x.d);
+const inv=Object.entries(p.inv).filter(x=>x[1]>0);
+return `<div style="text-align:left;margin-top:8px;background:#fffaf0;border-radius:14px;padding:8px;box-shadow:inset 0 0 0 2px #f0c24a">
+<div style="font-weight:700;margin-bottom:4px">📋 การ์ดเมนูของ ${p.e} ${p.n} <span style="font-weight:400;font-size:12px">(เป้า ${p.t} kcal · ตอนนี้ ${p.kcal+p.extra})</span></div>
+${p.menus.map(x=>`<div class="menu ${x.d?'done':ready(p,x.m)?'rdy':''}" style="margin-bottom:6px"><span class="k">${x.m.k} kcal</span><b>${x.d?'✅ ':''}${x.m.n}</b><div class="need">${Object.entries(x.m.need).map(([k,v])=>{const h=Math.min(v,p.inv[k]||0);return `<span class="ch ${h>=v?'ok':''}">${I[k][0]} ${I[k][1]} ${h}/${v}</span>`}).join('')}</div></div>`).join('')}
+<div style="font-size:13px"><b>🎒 กระเป๋า:</b> ${inv.map(([k,v])=>`${I[k][0]}${I[k][1]}×${v}`).join(' · ')||'ยังว่าง'}</div></div>`}
+function needOf(p,k){const tot=p.menus.filter(x=>!x.d).reduce((a,x)=>a+(x.m.need[k]||0),0);return Math.max(0,tot-(p.inv[k]||0))}
+async function pick(p,n,title){for(let i=0;i<n;i++){const k=await ask(`<h2>${title}</h2><div>เลือกวัตถุดิบ (${i+1}/${n})</div><button class="btn" type="button" style="margin-top:8px;background:#8e5bd9;box-shadow:0 4px 0 #5f36a3" onclick="const e=document.getElementById('pkMenu');e.style.display=e.style.display=='none'?'block':'none'">📋 ดูการ์ดเมนู / กระเป๋า</button><div id="pkMenu" style="display:none">${menuView(p)}</div><div style="font-size:12px;margin-top:8px">ป้าย <b style="color:#c0392b">ขาด n</b> = ยังขาดอีกกี่ชิ้นเพื่อทำเมนูที่เหลือ</div><div class="pick">${Object.keys(I).map(k=>{const d=needOf(p,k);return `<button style="background:${GC[GR[k]]}" onclick="mr('${k}')">${I[k][0]}<small>${I[k][1]}</small>${d?`<small style="color:#c0392b">ขาด ${d}</small>`:''}</button>`}).join('')}</div>`);if(!k){toast('ปิดหน้าต่างแล้ว');return}give(p,k);toast(`ได้ ${I[k][0]} ${I[k][1]} ×1`);render()}}
+const DIST=[0,2,4,6],STEAL=[0,1,2,3],CANDY=[0,120,230,350];
+async function attack(){const p=P();if(G.busy||G.ps.length<2||p.atkUsed)return;G.busy=true;render();
+const A=[['🌪️','ลมพัดถอย','a',1],['🥷','ขโมยวัตถุดิบ','x',1],['🍬','ป้อนขนม','c',1],['🧊','แช่แข็ง ข้ามตาหน้า','f',3],['🪤','วางกับดักบนช่องนี้','t',1],['🛡️','โล่ป้องกัน (กัน 1 ครั้ง)','s',1]];
+const scale={a:1,x:1,c:1};
+const a=await ask(`<h2>⚔️ เลือกการโจมตี (ใช้ได้ 1 ครั้ง/ตา · พลัง ⚡${p.en})</h2><p style="font-size:12px">⚡ ยิ่งใช้เยอะ ยิ่งแรง!</p><div class="opts">${A.map(x=>`<button class="btn ${'st'.includes(x[2])?'g':'r'}" ${p.en>=x[3]?'':'disabled'} onclick="mr('${x[2]}')">${x[0]} ${x[1]}${scale[x[2]]?' (⚡1-3)':` · ⚡${x[3]}`}</button>`).join('')}${ok('ยกเลิก','',0)}</div>`);
+const d=A.find(x=>x[2]==a);if(!d){G.busy=false;render();return}
+let lvl=d[3];
+if(scale[a]){const maxL=Math.min(3,p.en);const opts=[1,2,3].filter(l=>l<=maxL);
+const eff=a=='a'?DIST.map(v=>v+' ช่อง'):a=='x'?STEAL.map(v=>v+' ชิ้น'):CANDY.map(v=>'+'+v+' kcal');
+lvl=+(await ask(`<h2>${d[0]} เลือกพลัง</h2><div class="opts">${opts.map(l=>`<button class="btn ${l==3?'r':l==2?'o':'g'}" onclick="mr(${l})">⚡${l} → ${eff[l]}</button>`).join('')}${ok('ยกเลิก','',0)}</div>`));
+if(!lvl){G.busy=false;render();return}}
+if(a=='s'){p.en-=1;p.sh=1;p.atkUsed=1;G.msg='🛡️ ตั้งโล่ป้องกันแล้ว'}
+else if(a=='t'){p.en-=1;p.atkUsed=1;G.traps[p.pos]=p.i;G.msg='🪤 วางกับดักแล้ว รอเหยื่อ!'}
+else{const os=G.ps.filter(q=>q!=p);const i=await ask(`<h2>เลือกเป้าหมาย</h2><div class="opts">${os.map(q=>`<button class="btn" onclick="mr(${q.i})">${q.e} ${q.n}</button>`).join('')}${ok('ยกเลิก','',0)}</div>`);
+if(!i&&i!==0||i<0){G.busy=false;render();return}const q=G.ps[i];
+p.en-=lvl;p.atkUsed=1;if(q.sh){q.sh=0;beep(200,.3);G.msg=`🛡️ ${q.n} ป้องกันไว้ได้!`}else{beep(150,.3);
+if(a=='a')q.pos=(q.pos+T.length-DIST[lvl])%T.length;
+if(a=='c')q.extra+=CANDY[lvl];
+if(a=='f')q.frz=1;
+if(a=='x')for(let j=0;j<STEAL[lvl];j++){const ks=Object.keys(q.inv).filter(k=>q.inv[k]>0);if(ks.length){const k=ks[rn(ks.length)];q.inv[k]--;give(p,k)}}
+const lab=a=='a'?DIST[lvl]+' ช่อง':a=='x'?STEAL[lvl]+' ชิ้น':a=='c'?'+'+CANDY[lvl]+' kcal':'ข้ามตา';
+G.msg=`${d[0]} ${p.n} ใช้ "${d[1]}" (⚡${lvl}: ${lab}) ใส่ ${q.n}!`}}
+toast(G.msg);G.busy=false;render()}
+async function useAb(){const p=P();if(!p.ab||G.busy||G.ph!='roll')return;G.busy=true;p.ab=0;beep(880,.2);
+if(p.cid==0){render();await pick(p,1,'🧠 ฉลาดคิด')}
+else if(p.cid==1){p.buff='sprint'}
+else if(p.cid==2){p.buff='two'}
+else if(p.cid==3){p.sh=1}
+else{render();await pick(p,2,'💰 นักสะสม')}
+G.msg='ใช้พลังพิเศษแล้ว! '+p.abt;G.busy=false;render()}
+async function land(p){const t=T[p.pos];const vs=G.ps.filter(q=>q!=p&&q.pos==p.pos&&t!='S'&&Object.values(q.inv).some(v=>v>0));
+if(vs.length){const q=vs[0],ks=Object.keys(q.inv).filter(k=>q.inv[k]>0),k=ks[rn(ks.length)];q.inv[k]--;give(p,k);await ask(`<div class="big">🥷</div><h2>ปะทะ!</h2><p>${p.n} แอบขโมย ${I[k][0]} ${I[k][1]} จาก ${q.n}!</p>${ok('ฮ่าๆ')}`)}
+if(G.traps[p.pos]!==undefined&&G.traps[p.pos]!=p.i){const o=G.ps[G.traps[p.pos]];delete G.traps[p.pos];o.en=Math.min(8,o.en+1);beep(180,.3);
+if(p.sh){p.sh=0;await ask(`<div class="big">🛡️</div><h2>โล่กันกับดัก!</h2><p>ของ ${o.n} ใช้ไม่ได้ผล</p>${ok()}`)}else{for(let j=0;j<2;j++){const ks=Object.keys(p.inv).filter(k=>p.inv[k]>0);if(ks.length)p.inv[ks[rn(ks.length)]]--}await ask(`<div class="big">🪤</div><h2>ติดกับดักของ ${o.n}!</h2><p>เสียวัตถุดิบไป 2 ชิ้น</p>${ok('โอ๊ย!','',0)}`)}}
+
+
+if(I[t]){const g=G.gold==p.pos?4:2;give(p,t,g);if(g==4){p.en=Math.min(8,p.en+1);beep(1200,.3)}G.msg=`${g==4?'✨ ช่องทอง! ได้ ⚡1 พลัง และ ':''}ได้ ${I[t][0]} ${I[t][1]} ×${g}`;render();toast(G.msg);return}
+if(t=='S'){G.msg='อยู่ที่จุดเริ่มต้น พักหายใจ 😌';return}
+if(t=='M'){G.msg='🛒 ถึงตลาดสด!';render();await pick(p,2,'🛒 ตลาดสด เลือกซื้อ 2 ชิ้น');G.msg='ช้อปเสร็จแล้ว!';return}
+if(t=='X'){const s=SW[rn(4)];const eat=await ask(`<div class="big">${s[0]}</div><h2>เจอ${s[1]}!</h2><p>ให้พลังงานเพิ่ม <b>+${s[2]} kcal</b> จะกินไหม?<br><small>ถ้าไม่กิน ได้ ⭐ ดาวสุขภาพ (ลดคะแนนความคลาดเคลื่อน)</small></p><div class="opts">${ok('😋 กิน!',1,'o')}${ok('💪 ไม่กิน ขอเก็บดาว',0)}</div>`);
+if(eat){p.extra+=s[2];G.msg=`กิน${s[1]} +${s[2]} kcal`}else{p.stars++;p.en=Math.min(8,p.en+1);G.msg='⭐ ได้ดาวสุขภาพ +⚡1 ใจแข็งมาก'}return}
+if(t=='?'){const e=rn(12);
+if(e<5){const q=rn(2)?calcQ():Q[rn(Q.length)];const os=sh([q[1],...q[2]]);const a=await ask(`<div class="big">🧠</div><h2>คำถามท้าทายความคิด</h2><p>${q[0]}</p><div class="opts">${os.map(o=>`<button class="btn" onclick="mr('${o}')">${o}</button>`).join('')}</div>`);
+if(a==q[1]){p.en=Math.min(8,p.en+1);G.msg='✅ ตอบถูก! เลือกวัตถุดิบ 1 ชิ้น +⚡1';render();await pick(p,1,'🎉 ตอบถูก!')}else if(a==null){G.msg='ปิดคำถามไว้ก่อน ไม่เป็นไร'}else{await ask(`<div class="big">😅</div><h2>ยังไม่ถูกนะ</h2><p>คำตอบคือ <b>${q[1]}</b></p>${ok()}`);G.msg='ตอบผิด ไม่เป็นไร ได้ความรู้แล้ว'}}
+else if(e<7){const k=Object.keys(I)[rn(14)],k2=Object.keys(I)[rn(14)];give(p,k,2);give(p,k2);await ask(`<div class="big">🎁</div><h2>ภารกิจพิเศษ: ได้รับของขวัญ!</h2><p>${I[k][0]} ${I[k][1]} ×2 และ ${I[k2][0]} ${I[k2][1]} ×1</p>${ok('เย้!')}`);G.msg='ได้ของขวัญจากเพื่อนบ้าน 🎁'}
+else if(e<8){const ks=Object.keys(p.inv).filter(k=>p.inv[k]>0);if(ks.length){const k=ks[rn(ks.length)];p.inv[k]--;await ask(`<div class="big">🐱</div><h2>เหตุการณ์ไม่คาดคิด!</h2><p>แมวขโมย ${I[k][0]} ${I[k][1]} ไปหนึ่งชิ้น!</p>${ok('อุ๊ย...','',0)}`);G.msg='แมวขโมยวัตถุดิบ 🐱'}else{await ask(`<div class="big">🐱</div><h2>แมวมาแต่ไม่มีอะไรให้ขโมย</h2>${ok()}`);G.msg='รอดไปได้!'}}
+else if(e<9){await ask(`<div class="big">🏃</div><h2>ออกกำลังกาย!</h2><p>ได้ดาวสุขภาพ ⭐ และเดินเพิ่มไป 2 ช่อง</p>${ok()}`);p.stars++;p.pos=(p.pos+2)%T.length;render();await sleep(300);G.msg='วิ่งเล่นสนุก ได้ ⭐';const t2=T[p.pos];if(I[t2]){give(p,t2,2);toast(`ได้ ${I[t2][0]} ${I[t2][1]} ×2`)}}
+else if(e==9){for(const q of G.ps)if(q!=p){if(q.sh)q.sh=0;else{const ks=Object.keys(q.inv).filter(k=>q.inv[k]>0);if(ks.length)q.inv[ks[rn(ks.length)]]--}}await ask(`<div class="big">🌪️</div><h2>พายุตลาด!</h2><p>คู่แข่งทุกคนเสียวัตถุดิบ 1 ชิ้น (โล่กันได้)</p>${ok('555')}`);G.msg='พายุพัดคู่แข่ง 🌪️'}
+else if(e==10){p.en=Math.min(8,p.en+3);await ask(`<div class="big">⚡</div><h2>ชาร์จพลัง!</h2><p>ได้พลังโจมตี +3</p>${ok()}`);G.msg='⚡ +3 พร้อมลุย!'}
+else{G.ph='roll';await ask(`<div class="big">⚡</div><h2>พลังเชฟ!</h2><p>ได้ทอยลูกเต๋าอีกครั้ง!</p>${ok()}`);G.msg='ทอยอีกรอบเลย!';G.busy=false;render();return 'again'}}}
+function cook(i){const p=P(),x=p.menus[i];if(x.d||!ready(p,x.m))return;for(const[k,v]of Object.entries(x.m.need))p.inv[k]-=v;x.d=1;beep(1046,.3);p.cooked++;p.kcal+=x.m.k;G.msg=`👨‍🍳 ปรุง "${x.m.n}" สำเร็จ +${x.m.k} kcal`;toast(`+${x.m.k} kcal 🍽️`);if(p.cooked==3&&G.end<0){G.end=p.i;G.msg+=' — ครบ 3 มื้อ! คนอื่นได้เล่นอีกตาสุดท้าย'}render()}
+async function swapMenu(){const p=P(),l=p.menus.map((x,i)=>[x,i]).filter(x=>!x.d);if(!l.length)return;
+const cur0=G.ps.flatMap(q=>q.menus.map(x=>x.m));const pool0=M.filter(m=>!cur0.includes(m));
+if(!pool0.length){toast('ไม่มีเมนูสำรองให้สลับแล้ว (ใช้ครบทุกเมนูในกองแล้ว)');return}
+G.busy=true;render();
+const i=await ask(`<h2>🔄 สลับการ์ดเมนู</h2><p>เลือกเมนูที่อยากเปลี่ยน (ใช้ 1 ตา)</p><div class="opts">${l.map(([x,i])=>`<button class="btn" onclick="mr(${i})">${x.m.n} (${x.m.k})</button>`).join('')}${ok('ยกเลิก',-1,'r')}</div>`);
+if(i==null||i<0){G.busy=false;render();return}const cur=G.ps.flatMap(q=>q.menus.map(x=>x.m));const pool=M.filter(m=>!cur.includes(m));if(!pool.length){toast('ไม่มีเมนูสำรองให้สลับแล้ว');G.busy=false;render();return}p.menus[i]={m:pool[rn(pool.length)],d:0};G.msg=`เปลี่ยนเป็น "${p.menus[i].m.n}"`;G.busy=false;endTurn()}
+function beginTurn(p){p.turns=(p.turns||0)+1;if(p.turns%2==0)p.en=Math.min(8,p.en+1);p.atkUsed=0}
+function endTurn(){if(G.busy)return;let n=G.cur;do{n=(n+1)%G.ps.length;if(n===G.end)return over()}while(G.ps[n].cooked>=3||G.ps[n].frz&&(G.ps[n].frz=0,toast(G.ps[n].n+' ถูกแช่แข็ง ข้ามตา 🧊'),1));if(n<=G.cur){G.round++;G.gold=goldPick();if(G.round>MAXR)return over()}G.cur=n;beginTurn(P());G.ph='roll';G.msg=`ถึงตา ${P().n} แล้ว ส่งเครื่องต่อให้เพื่อนนะ!`;G.die='🎲';render()}
+function over(){G.ph='over';const r=G.ps.map(p=>{const t=p.kcal+p.extra,d=Math.abs(t-p.t),s=(t>p.t?d*1.5:d)-p.stars*20+(3-p.cooked)*300-(p.mis.f(p)?p.mis.b:0);return{p,t,d,s}}).sort((a,b)=>a.s-b.s);
+$('#app').innerHTML=`<h1 class="logo">Hungry <span>Food</span></h1><div class="box setup"><div class="hero"><div style="font-size:70px">🏆</div><h2>${r[0].p.e} ${r[0].p.n} ชนะ!</h2></div>
+${r.map((x,i)=>`<div class="sc"><b>${['🥇','🥈','🥉'][i]}</b><div class="av" style="background:${x.p.c}">${x.p.e}</div><div style="flex:1;text-align:left"><b>${x.p.n}</b> (เป้า ${x.p.t})<div style="font-size:12px">ได้ ${x.t} kcal · ต่าง ${x.t>x.p.t?'+':'-'}${x.d} · ⭐${x.p.stars} · ${x.p.cooked}/3 มื้อ<br>🎖️ ${x.p.mis.f(x.p)?'สำเร็จ ✅ ':'ไม่สำเร็จ ❌ '}${x.p.mis.t}</div></div><b>${Math.round(x.s)}</b></div>`).join('')}
+<p style="font-size:13px">คะแนน = ความคลาดเคลื่อนจากเป้าพลังงาน (เกินเป้านับ ×1.5) − ⭐×20 ยิ่งน้อยยิ่งดี 💡 เมนูครบ 5 หมู่ พลังงานพอดี ร่างกายแข็งแรง!</p><button class="btn g" onclick="setup()">🎮 เล่นอีกครั้ง</button></div>`;
+for(let i=0;i<40;i++){const c=document.createElement('div');c.className='conf';c.textContent=['🍎','🍌','🍊','🥕','⭐','🍚'][rn(6)];c.style.left=rn(100)+'vw';c.style.animationDuration=(2+Math.random()*3)+'s';document.body.appendChild(c);setTimeout(()=>c.remove(),5500)}}
+setup();
+</script>
+<script id="help-js">
+(function(){
+const fab=document.createElement('button');fab.id='helpFab';fab.textContent='📖 กติกา / ใบความรู้';fab.setAttribute('aria-label','เปิดกติกาและใบความรู้');document.body.appendChild(fab);
+const ov=document.createElement('div');ov.id='helpOv';
+ov.innerHTML='<div id="helpBox" role="dialog" aria-label="กติกาและใบความรู้"><div id="helpHd"><b>📖 กติกา &amp; ใบความรู้</b><button id="helpX" aria-label="ปิด">✕</button></div><div id="helpTabs"></div><div id="helpBody"></div></div>';
+document.body.appendChild(ov);
+const TABS=[['k','📖 ใบความรู้'],['c','🧮 คิดแคลอรี'],['r','📜 กติกา'],['s','📊 สถานะตอนนี้']];
+let cur='k',timer=null;
+const tabs=document.getElementById('helpTabs'),body=document.getElementById('helpBody');
+tabs.innerHTML=TABS.map(t=>`<button data-t="${t[0]}">${t[1]}</button>`).join('');
+
+const KNOW=`
+<h4>⚡ สารอาหาร 1 กรัม ให้พลังงานกี่ kcal?</h4>
+<div class="hk">
+<div style="background:#ffc45e"><b>🍚</b>คาร์โบไฮเดรต<small>1 g = 4 kcal</small></div>
+<div style="background:#ff9bab"><b>🥩</b>โปรตีน<small>1 g = 4 kcal</small></div>
+<div style="background:#ffe066"><b>🧈</b>ไขมัน<small>1 g = 9 kcal</small></div>
+<div style="background:#7fd88a"><b>🥬</b>วิตามิน<small>1 g = 0 kcal</small></div>
+<div style="background:#b9dcf7"><b>🧂</b>เกลือแร่<small>1 g = 0 kcal</small></div>
+<div style="background:#d8f0ff"><b>💧</b>น้ำ<small>1 g = 0 kcal</small></div>
+</div>
+<div class="hn">🔑 <b>โปรตีน 1 กรัม = 4 kcal</b> · ไขมัน 1 กรัมให้พลังงานมากกว่า <b>2.25 เท่า</b> ของโปรตีนหรือคาร์บ (9 ÷ 4)</div>
+<p><b>สูตร:</b> พลังงาน (kcal) = (คาร์บ × 4) + (โปรตีน × 4) + (ไขมัน × 9)</p>
+<table><tr><th>โปรตีน (g)</th><th>10</th><th>15</th><th>20</th><th>30</th></tr><tr><td>พลังงาน (kcal)</td><td>40</td><td>60</td><td>80</td><td>120</td></tr></table>
+<table><tr><th>ไขมัน (g)</th><th>5</th><th>10</th><th>15</th><th>20</th></tr><tr><td>พลังงาน (kcal)</td><td>45</td><td>90</td><td>135</td><td>180</td></tr></table>
+<p><b>ตัวอย่าง:</b> คาร์บ 50 g + โปรตีน 15 g + ไขมัน 10 g<br>= (50×4) + (15×4) + (10×9) = 200 + 60 + 90 = <b>350 kcal</b></p>
+
+<h4>🧬 หน้าที่ของสารอาหาร</h4>
+<ul>
+<li>🍚 <b>คาร์โบไฮเดรต</b> — แหล่งพลังงานหลักของร่างกาย (ข้าว เส้น แป้ง)</li>
+<li>🥩 <b>โปรตีน</b> — สร้างและซ่อมแซมส่วนที่สึกหรอ เสริมกล้ามเนื้อ (ไก่ หมู ไข่)</li>
+<li>🧈 <b>ไขมัน</b> — พลังงานสำรอง ช่วยดูดซึมวิตามินบางชนิด แต่ควรกินพอดี</li>
+<li>🥬 <b>วิตามินและเกลือแร่</b> — ช่วยให้ร่างกายทำงานเป็นปกติ ไม่ให้พลังงาน (ผัก ผลไม้)</li>
+<li>💧 <b>น้ำ</b> — ช่วยลำเลียงสารอาหารและปรับอุณหภูมิ ไม่ให้พลังงาน · น้ำเปล่าดีที่สุด</li>
+</ul>
+
+<h4>🥗 วัตถุดิบในเกมอยู่กลุ่มไหน</h4>
+<table>
+<tr><th>กลุ่ม</th><th>วัตถุดิบในเกม</th><th>สารอาหารหลัก</th></tr>
+<tr style="background:#fff2d6"><td>ข้าว-แป้ง</td><td>🍚 ข้าว 🍜 เส้น 🍞 แป้ง</td><td>คาร์โบไฮเดรต</td></tr>
+<tr style="background:#ffe6ea"><td>เนื้อสัตว์-ไข่</td><td>🍗 ไก่ 🥩 หมู 🥚 ไข่</td><td>โปรตีน</td></tr>
+<tr style="background:#fff9d6"><td>ไขมัน</td><td>🫒 น้ำมัน 🧈 เนย</td><td>ไขมัน</td></tr>
+<tr style="background:#e4f8e7"><td>ผัก</td><td>🥬 ผักบุ้ง 🥕 แครอท 🥗 ผักสลัด</td><td>วิตามิน เกลือแร่ ใยอาหาร</td></tr>
+<tr style="background:#ffe9d9"><td>ผลไม้</td><td>🍌 กล้วย 🍎 แอปเปิ้ล 🍊 ส้ม</td><td>วิตามิน เกลือแร่ น้ำตาลธรรมชาติ</td></tr>
+</table>
+<div class="hn">🍽️ มื้อที่ดีควรมีครบหลายกลุ่ม: ข้าว-แป้งให้แรง · โปรตีนซ่อมแซม · ผักผลไม้ให้วิตามิน · ไขมันแต่น้อย</div>
+
+<h4>🎯 พลังงานที่ร่างกายต้องการต่อวัน (Target Energy)</h4>
+<ul>
+<li>แต่ละคนต้องการไม่เท่ากัน ขึ้นกับ <b>เพศ อายุ น้ำหนัก และกิจกรรม</b></li>
+<li>คน <b>Activity สูง</b> (ซ้อมกีฬา) ใช้พลังงานมาก จึงมีเป้าสูงกว่าคนที่นั่งเรียนเป็นส่วนใหญ่</li>
+<li>กินน้อยกว่าที่ต้องการ → อ่อนเพลีย ขาดสารอาหาร</li>
+<li>กินเกินที่ต้องการ → ร่างกายสะสมส่วนเกินเป็น <b>ไขมัน</b></li>
+<li>ต้อง <b>สมดุล</b>: พลังงานที่กิน ≈ พลังงานที่ใช้</li>
+</ul>
+
+<h4>🍭 ของหวาน &amp; เครื่องดื่ม</h4>
+<ul>
+<li>ขนมหวาน น้ำหวาน ชานมไข่มุก ให้พลังงานสูงแต่ให้วิตามินน้อย (ในเกม 180–250 kcal ต่อชิ้น)</li>
+<li>เลือกกินนานๆ ครั้ง และเลือก <b>น้ำเปล่า</b> เป็นเครื่องดื่มหลัก</li>
+</ul>
+<h4>📝 ท่องจำง่ายๆ</h4>
+<p>คาร์บ 4 · โปรตีน 4 · ไขมัน 9 · วิตามิน/เกลือแร่/น้ำ 0</p>`;
+
+const RULES=`
+<h4>🏁 เป้าหมายของเกม</h4>
+<p>ปรุงอาหารให้ครบ <b>3 มื้อ</b> ตามการ์ดเมนู ให้พลังงานรวมใกล้ <b>Target Energy</b> ของตัวละครที่สุด (ไม่ขาด ไม่เกิน) เกมจำกัดรอบตามจำนวนผู้เล่น: <b>1 คน 14 รอบ · 2–3 คน 20 รอบ · 4–5 คน 25 รอบ</b> (ตัวละครถูกสุ่มให้ตอนเริ่มเกม)</p>
+
+<h4>🔁 ลำดับในแต่ละตา</h4>
+<ul>
+<li>1) 🎲 ทอยเต๋าแล้วเดินตามช่อง (ก่อนทอยใช้ ⚡พลังพิเศษได้ 1 ครั้งต่อเกม)</li>
+<li>2) ทำตามช่องที่ตก (เก็บวัตถุดิบ ตลาด ขนม ฯลฯ)</li>
+<li>3) ถ้าวัตถุดิบครบตามสูตร กด 👨‍🍳 <b>ปรุงอาหาร</b> ได้</li>
+<li>4) โจมตีได้ <b>ตาละ 1 ครั้ง</b> แล้วกด ✅ จบตา</li>
+<li>🔄 สลับเมนู: เปลี่ยนการ์ดเมนูที่ยังไม่ปรุง แต่ใช้ 1 ตา</li>
+</ul>
+
+<h4>🗺️ ช่องบนกระดาน</h4>
+<ul>
+<li>🍚🍗🥬🍌 ช่องวัตถุดิบ — ได้วัตถุดิบนั้น <b>×2</b></li>
+<li>✨ ช่องทอง (เปลี่ยนทุกรอบ) — ได้ <b>×4</b> และ ⚡+1</li>
+<li>🏁 START — ผ่านจุดนี้ เลือกวัตถุดิบฟรี 1 ชิ้น</li>
+<li>🛒 ตลาด — เลือกวัตถุดิบเอง 2 ชิ้น</li>
+<li>🍭 ของหวาน — ถ้ากินได้พลังงานเพิ่ม (+kcal) ถ้าไม่กินได้ ⭐ และ ⚡+1</li>
+<li>❓ เหตุการณ์ — สุ่ม: คำถามโภชนาการ/โจทย์คำนวณ kcal (ตอบถูกได้วัตถุดิบ 1 ชิ้น +⚡1), ของขวัญ, แมวขโมย, ออกกำลังกาย (⭐ และเดินเพิ่ม 2 ช่อง), พายุตลาด, ชาร์จ ⚡+3, ทอยอีกครั้ง</li>
+<li>เดินไปช่องเดียวกับคู่แข่ง → แอบขโมยวัตถุดิบ 1 ชิ้น</li>
+</ul>
+
+<h4>⚔️ พลังโจมตี ⚡</h4>
+<p>เริ่มเกมมี ⚡2 · ได้ +1 ทุก 2 ตาที่เล่น · เก็บได้สูงสุด ⚡8 · ใช้ได้ตาละ 1 ครั้ง (ต้องมีผู้เล่น 2 คนขึ้นไป)</p>
+<table>
+<tr><th>การโจมตี</th><th>⚡1</th><th>⚡2</th><th>⚡3</th></tr>
+<tr><td>🌪️ ลมพัดถอย</td><td>2 ช่อง</td><td>4 ช่อง</td><td>6 ช่อง</td></tr>
+<tr><td>🥷 ขโมยของ</td><td>1 ชิ้น</td><td>2 ชิ้น</td><td>3 ชิ้น</td></tr>
+<tr><td>🍬 ป้อนขนม</td><td>+120 kcal</td><td>+230 kcal</td><td>+350 kcal</td></tr>
+</table>
+<ul>
+<li>🧊 <b>แช่แข็ง</b> (⚡3) — คู่แข่งข้ามตาหน้า</li>
+<li>🪤 <b>กับดัก</b> (⚡1) — วางบนช่องที่ยืนอยู่ ผู้เหยียบเสียวัตถุดิบ 2 ชิ้น เจ้าของได้ ⚡+1</li>
+<li>🛡️ <b>โล่</b> (⚡1) — กันการโจมตีหรือกับดักได้ 1 ครั้ง</li>
+</ul>
+
+<h4>⭐ ดาวสุขภาพ &amp; 🎖️ ภารกิจลับ</h4>
+<ul>
+<li>ได้ ⭐ จากการปฏิเสธขนมหวาน และออกกำลังกาย — ช่วยลดคะแนน</li>
+<li>ภารกิจลับสำเร็จ → ได้โบนัสคะแนน (ดูของตัวเองที่แท็บ 📊)</li>
+</ul>
+
+<h4>🏆 จบเกมและคิดคะแนน</h4>
+<ul>
+<li>เมื่อมีคนปรุงครบ 3 มื้อ คนอื่นเล่นต่อจนถึงตาของเขาอีกครั้ง แล้วจบเกม (หรือครบจำนวนรอบที่กำหนด)</li>
+<li><b>คะแนน = ความคลาดเคลื่อนจากเป้า</b> (เกินเป้านับ ×1.5) − ⭐×20 + (มื้อที่ยังไม่ปรุง × 300) − โบนัสภารกิจ</li>
+<li><b>คะแนนน้อยที่สุดชนะ!</b></li>
+</ul>`;
+
+function calcView(){
+return `<h4>🧮 เครื่องคิดพลังงานอาหาร</h4><p>ใส่จำนวนกรัม ระบบคิด kcal ให้ทันที</p>
+<div class="hc">
+<label>🍚 คาร์บ <input id="hcC" type="number" min="0" inputmode="decimal" value="50"> g × 4</label>
+<label>🥩 โปรตีน <input id="hcP" type="number" min="0" inputmode="decimal" value="15"> g × 4</label>
+<label>🧈 ไขมัน <input id="hcF" type="number" min="0" inputmode="decimal" value="10"> g × 9</label>
+<div class="hres" id="hcR"></div></div>
+<div class="hn">💡 ลองใส่โปรตีน 1 g ดู แล้วเปรียบเทียบกับไขมัน 1 g — ไขมันให้พลังงานมากกว่า 2.25 เท่า</div>
+<h4>สูตรที่ใช้ในเกม</h4><p>kcal = (คาร์บ × 4) + (โปรตีน × 4) + (ไขมัน × 9)</p>`}
+function calcBind(){
+const g=id=>Math.max(0,parseFloat(document.getElementById(id).value)||0);
+const up=()=>{const c=g('hcC')*4,p=g('hcP')*4,f=g('hcF')*9,t=c+p+f,pc=x=>t?Math.round(x/t*100):0;
+document.getElementById('hcR').innerHTML=`คาร์บ ${c} + โปรตีน ${p} + ไขมัน ${f}<br>= <big><b>${t}</b></big> kcal
+<div class="hbar"><i style="width:${t?c/t*100:0}%;background:#ffc45e"></i><i style="width:${t?p/t*100:0}%;background:#ff9bab"></i><i style="width:${t?f/t*100:0}%;background:#ffe066"></i></div>
+<div style="font-size:12px;margin-top:4px">🟧 คาร์บ ${pc(c)}% · 🟪 โปรตีน ${pc(p)}% · 🟨 ไขมัน ${pc(f)}%</div>`};
+['hcC','hcP','hcF'].forEach(id=>document.getElementById(id).addEventListener('input',up));up()}
+
+function statusView(){
+if(typeof G==='undefined'||!G.ps||!G.ps.length||G.ph==='setup')return '<div class="hn">ยังไม่ได้เริ่มเกม — เลือกจำนวนผู้เล่นก่อนนะ</div>';
+const p=G.ps[G.cur],tot=p.kcal+p.extra,left=p.t-tot;
+const todo=p.menus.filter(x=>!x.d),plus=todo.reduce((a,x)=>a+x.m.k,0),proj=tot+plus;
+return `<h4>${p.e} ตาของ ${p.n} · รอบ ${G.round}/${MAXR}</h4>
+<div class="hst">🎯 เป้าหมาย <b>${p.t} kcal</b><br>ตอนนี้ได้ <b>${tot} kcal</b> ${p.extra?`(รวมขนม +${p.extra})`:''}
+<div class="hb"><b style="width:${Math.min(100,tot/p.t*100)}%;${tot>p.t?'background:#ff6b81':''}"></b></div>
+${left>=0?`ยังขาดอีก <b>${left}</b> kcal`:`<span style="color:#e0552b">เกินเป้า <b>${-left}</b> kcal</span>`}</div>
+<div class="hst"><b>📋 เมนู</b>${p.menus.map(x=>`<div>${x.d?'✅':'⬜'} ${x.m.n} — ${x.m.k} kcal</div>`).join('')}
+<div style="margin-top:4px">ถ้าปรุงครบทุกเมนู ≈ <b>${proj} kcal</b> ${Math.abs(proj-p.t)<=60?'👍 ใกล้เป้ามาก':proj>p.t?'⚠️ เกินเป้า '+(proj-p.t):'ต่ำกว่าเป้า '+(p.t-proj)}</div></div>
+<div class="hst">⚡ พลัง <b>${p.en}</b> · ⭐ ดาว <b>${p.stars}</b> · 🍽️ ปรุงแล้ว <b>${p.cooked}/3</b> ${p.sh?'· 🛡️ มีโล่':''} ${p.frz?'· 🧊 ถูกแช่แข็ง':''}<br>⚡ พลังพิเศษ: ${p.ab?p.abt:'ใช้ไปแล้ว'}<br>🎖️ ภารกิจลับ: ${p.mis.t} ${p.mis.f(p)?'<b style="color:#3a8d46">(ตอนนี้ผ่านเกณฑ์ ✅)</b>':''}</div>
+<div class="hn">⚖️ ทบทวน: คาร์บ/โปรตีน 1 g = 4 kcal · ไขมัน 1 g = 9 kcal</div>`}
+
+function show(t){cur=t;
+tabs.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+const y=body.scrollTop;
+if(t==='k')body.innerHTML=KNOW;
+else if(t==='r')body.innerHTML=RULES;
+else if(t==='c'){body.innerHTML=calcView();calcBind()}
+else body.innerHTML=statusView();
+body.scrollTop=(t==='s')?y:0}
+function open_(){ov.classList.add('on');show(cur);clearInterval(timer);timer=setInterval(()=>{if(cur==='s'&&ov.classList.contains('on'))show('s')},800)}
+function close_(){ov.classList.remove('on');clearInterval(timer)}
+fab.addEventListener('click',open_);
+document.getElementById('helpX').addEventListener('click',close_);
+ov.addEventListener('click',e=>{if(e.target===ov)close_()});
+tabs.addEventListener('click',e=>{const b=e.target.closest('button');if(b)show(b.dataset.t)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&ov.classList.contains('on'))close_()});
+})();
+</script>
+</body></html>
